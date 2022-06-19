@@ -25,6 +25,8 @@ contract WavePortal {
     */
     Wave[] waves;
 
+    mapping(address => uint256) public lastWaveAt;
+
     constructor() payable {
         console.log("We have been constructed!");
         /* 初期シードの設定 */
@@ -35,13 +37,24 @@ contract WavePortal {
     * _messageは、ユーザーがフロントエンドから送信するメッセージです。
     */
     function wave(string memory _message) public {
+        /* 現在ユーザーがwaveを送信している時刻と、前回waveを送信した時刻が15分以上離れていることを確認。 */
+        require(
+            lastWaveAt[msg.sender] + 15 minutes < block.timestamp,
+            "Wait 15min"
+        );
+
+        /* ユーザーの現在のタイムスタンプを更新する */
+        lastWaveAt[msg.sender] = block.timestamp;
+
         totalWaves += 1;
         console.log("%s waved w/ message %s", msg.sender, _message);
         /* 👋（wave）」とメッセージを配列に格納。 */
         waves.push(Wave(msg.sender, _message, block.timestamp));
+
         /* ユーザーのために乱数を生成する */
         seed = (block.difficulty + block.timestamp) % 100;
         console.log("Random # generated: %d", seed);
+
         /* ユーザーがETHを獲得できる確率を50％に設定 */
         if (seed <= 50) {
             console.log("%s won!", msg.sender);
@@ -59,7 +72,7 @@ contract WavePortal {
         /*　コントラクト側でemitされたイベントに関する通知をフロントエンドで取得できるようにする。　*/
         emit NewWave(msg.sender, block.timestamp, _message);
     }
-    
+
     function getAllWaves() public view returns (Wave[] memory) {
         return waves;
     }
