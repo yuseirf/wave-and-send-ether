@@ -1,5 +1,31 @@
 ### https://raw.github.com/github/gitignore/991e760c1c6d50fdda246e0178b9c58b06770b90/Node.gitignore
 
+node_modules
+.env
+coverage
+coverage.json
+typechain
+
+#Hardhat files
+cache
+artifacts
+hardhat.config.js
+
+.idea/
+.vscode/
+node_modules/
+build
+.DS_Store
+*.tgz
+my-app*
+template/src/__tests__/__snapshots__/
+lerna-debug.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+/.changelog
+.npm/
+
 # Logs
 logs
 *.log
